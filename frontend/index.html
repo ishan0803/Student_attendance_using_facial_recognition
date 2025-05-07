@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-color: #dee2e6;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f0f2f5;
+            padding: 0;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        h1 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            background-color: white;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            text-align: center;
+            background-color: white;
+            border: none;
+            flex: 1;
+            transition: var(--transition);
+            position: relative;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .tab:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .tab i {
+            margin-right: 0.5rem;
+        }
+        
+        .active-tab {
+            background-color: white;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .active-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        button i {
+            margin-right: 0.5rem;
+        }
+        
+        .result {
+            margin-top: 2rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        .alert-success {
+            background-color: rgba(76, 201, 240, 0.1);
+            border-left: 4px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .alert-error {
+            background-color: rgba(247, 37, 133, 0.1);
+            border-left: 4px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .attendance-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .attendance-high {
+            background-color: rgba(46, 213, 115, 0.1);
+            color: #2ed573;
+        }
+        
+        .attendance-medium {
+            background-color: rgba(255, 166, 43, 0.1);
+            color: #ffa62b;
+        }
+        
+        .attendance-low {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: #f72585;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .tab-content {
+                padding: 1.5rem;
+            }
+            
+            th, td {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container">
+        <h1><i class="fas fa-graduation-cap"></i> Student Attendance System</h1>
+        <p>Track and manage student attendance efficiently</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="tabs">
+        <div class="tab active-tab" id="addTab"><i class="fas fa-user-plus"></i> Add Student</div>
+        <div class="tab" id="verifyTab"><i class="fas fa-clipboard-check"></i> Verify Attendance</div>
+        <div class="tab" id="searchTab"><i class="fas fa-search"></i> Search Students</div>
+        <div class="tab" id="thresholdTab"><i class="fas fa-chart-bar"></i> Threshold Search</div>
+        <div class="tab" id="attendanceTab"><i class="fas fa-list-alt"></i> View Attendance</div>
+    </div>
+
+    <!-- Add Student Tab -->
+    <div class="tab-content active" id="addTabContent">
+        <h2><i class="fas fa-user-plus"></i> Add New Student</h2>
+        <form id="addStudentForm">
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> Student Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter full name" required>
+            </div>
+            <div class="form-group">
+                <label for="rn"><i class="fas fa-hashtag"></i> Roll Number:</label>
+                <input type="text" id="rn" name="rn" placeholder="Enter roll number" required>
+            </div>
+            <div class="form-group">
+                <label for="student_id"><i class="fas fa-id-card"></i> Student ID:</label>
+                <input type="text" id="student_id" name="student_id" placeholder="Enter student ID" required>
+            </div>
+            <button type="submit"><i class="fas fa-save"></i> Add Student</button>
+        </form>
+    </div>
+
+    <!-- Verify Attendance Tab -->
+    <div class="tab-content" id="verifyTabContent">
+        <h2><i class="fas fa-clipboard-check"></i> Verify Attendance</h2>
+        <form id="verifyForm">
+            <div class="form-group">
+                <label for="subject"><i class="fas fa-book"></i> Select Subject:</label>
+                <select id="subject" name="subject" required>
+                    <option value="" disabled selected>Choose a subject</option>
+                    <option value="maths">Mathematics</option>
+                    <option value="english">English</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="physics">Physics</option>
+                    <option value="datastructure">Data Structure</option>
+                </select>
+            </div>
+            <button type="submit"><i class="fas fa-check-circle"></i> Verify Attendance</button>
+        </form>
+    </div>
+
+    <!-- Search Students Tab -->
+    <div class="tab-content" id="searchTabContent">
+        <h2><i class="fas fa-search"></i> Search Students</h2>
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="query"><i class="fas fa-search"></i> Search Query (Name):</label>
+                <input type="text" id="query" name="query" placeholder="Enter student name to search" required>
+            </div>
+            <button type="submit"><i class="fas fa-search"></i> Search</button>
+        </form>
+        <div class="result" id="searchResult"></div>
+    </div>
+
+    <!-- Threshold Search Tab -->
+    <div class="tab-content" id="thresholdTabContent">
+        <h2><i class="fas fa-chart-bar"></i> Threshold Attendance Search</h2>
+        <form id="thresholdForm">
+            <div class="form-group">
+                <label for="thresholdSubject"><i class="fas fa-book"></i> Select Subject:</label>
+                <select id="thresholdSubject" name="subject" required>
+                    <option value="" disabled selected>Choose a subject</option>
+                    <option value="maths">Mathematics</option>
+                    <option value="english">English</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="physics">Physics</option>
+                    <option value="datastructure">Data Structure</option>
+                    <option value="total_attendance">Total Attendance</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="thresholdValue"><i class="fas fa-percentage"></i> Threshold Value:</label>
+                <input type="number" id="thresholdValue" name="threshold" min="0" max="100" placeholder="Enter percentage value" required>
+            </div>
+            <div class="form-group">
+                <label for="thresholdDirection"><i class="fas fa-sort"></i> Search for students:</label>
+                <select id="thresholdDirection" name="direction" required>
+                    <option value="1">Above threshold</option>
+                    <option value="-1">Below threshold</option>
+                </select>
+            </div>
+            <button type="submit"><i class="fas fa-filter"></i> Search</button>
+        </form>
+        <div class="result" id="thresholdResult"></div>
+    </div>
+
+    <!-- View Attendance Tab -->
+    <div class="tab-content" id="attendanceTabContent">
+        <h2><i class="fas fa-list-alt"></i> View Attendance Records</h2>
+        <button id="viewAttendanceBtn"><i class="fas fa-sync-alt"></i> Refresh Attendance Data</button>
+        <div class="result" id="attendanceResult"></div>
+    </div>
+
+    <div class="result" id="globalResult"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Tab switching functionality
+        $(".tab").click(function() {
+            // Get the tab id and corresponding content id
+            const tabId = $(this).attr("id");
+            const contentId = tabId + "Content";
+            
+            // Remove active class from all tabs and add to clicked tab
+            $(".tab").removeClass("active-tab");
+            $(this).addClass("active-tab");
+            
+            // Hide all content areas
+            $(".tab-content").removeClass("active").hide();
+            
+            // Show the corresponding content area
+            $("#" + contentId).addClass("active").show();
+        });
+
+        // Function to show loading state
+        function showLoading(targetElement) {
+            $(targetElement).html('<div class="spinner"></div> Loading...');
+        }
+
+        // Function to show success message
+        function showSuccess(targetElement, message) {
+            $(targetElement).html(`
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `);
+        }
+
+        // Function to show error message
+        function showError(targetElement, message) {
+            $(targetElement).html(`
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `);
+        }
+
+        // Function to format attendance value with color-coded badges
+        function formatAttendance(value) {
+            const numValue = parseFloat(value);
+            if (numValue >= 75) {
+                return `<span class="attendance-badge attendance-high">${value}</span>`;
+            } else if (numValue >= 60) {
+                return `<span class="attendance-badge attendance-medium">${value}</span>`;
+            } else {
+                return `<span class="attendance-badge attendance-low">${value}</span>`;
+            }
+        }
+
+        // Add student form submission
+        $('#addStudentForm').submit(function(e) {
+            e.preventDefault();
+            showLoading('#globalResult');
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/add_student',
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    showSuccess('#globalResult', response.message);
+                    $('#addStudentForm')[0].reset();
+                },
+                error: function(xhr, status, error) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred';
+                    showError('#globalResult', errorMsg);
+                }
+            });
+        });
+
+        // Verify attendance form submission
+        $('#verifyForm').submit(function(e) {
+            e.preventDefault();
+            showLoading('#globalResult');
+
+            const subject = $('#subject').val();
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/verify',
+                type: 'POST',
+                data: { subject: subject },
+                success: function(response) {
+                    showSuccess('#globalResult', response.message);
+                },
+                error: function(xhr, status, error) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred';
+                    showError('#globalResult', errorMsg);
+                }
+            });
+        });
+
+        // Search student form submission
+        $('#searchForm').submit(function(e) {
+            e.preventDefault();
+            showLoading('#searchResult');
+
+            const query = $('#query').val();
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/search_students',
+                type: 'POST',
+                data: { query: query },
+                success: function(response) {
+                    let resultHtml = '<h3><i class="fas fa-search-plus"></i> Search Results</h3>';
+                    if (response.data && response.data.length > 0) {
+                        resultHtml += '<div style="overflow-x: auto;"><table>';
+                        resultHtml += '<tr><th>Name</th><th>Student ID</th><th>Maths</th><th>English</th><th>Chemistry</th><th>Physics</th><th>Data Structure</th><th>Total</th></tr>';
+                        response.data.forEach(student => {
+                            resultHtml += `<tr>
+                                <td>${student.name}</td>
+                                <td>${student.student_id}</td>
+                                <td>${formatAttendance(student.maths)}</td>
+                                <td>${formatAttendance(student.english)}</td>
+                                <td>${formatAttendance(student.chemistry)}</td>
+                                <td>${formatAttendance(student.physics)}</td>
+                                <td>${formatAttendance(student.datastructure)}</td>
+                                <td>${formatAttendance(student.total_attendance)}</td>
+                            </tr>`;
+                        });
+                        resultHtml += '</table></div>';
+                    } else {
+                        resultHtml += `
+                            <div class="alert alert-error">
+                                <i class="fas fa-info-circle"></i>
+                                <span>No students found matching "${query}".</span>
+                            </div>
+                        `;
+                    }
+                    $('#searchResult').html(resultHtml);
+                },
+                error: function(xhr, status, error) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred during search';
+                    showError('#searchResult', errorMsg);
+                }
+            });
+        });
+
+        // Threshold search form submission
+        $('#thresholdForm').submit(function(e) {
+            e.preventDefault();
+            showLoading('#thresholdResult');
+
+            const subject = $('#thresholdSubject').val();
+            const threshold = $('#thresholdValue').val();
+            const direction = $('#thresholdDirection').val();
+            const directionText = direction === '1' ? 'above' : 'below';
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/threshold_attendance',
+                type: 'POST',
+                data: {
+                    subject: subject,
+                    threshold: threshold,
+                    direction: direction
+                },
+                success: function(response) {
+                    const subjectName = subject === 'total_attendance' ? 'Total Attendance' : 
+                        subject.charAt(0).toUpperCase() + subject.slice(1);
+                    
+                    let resultHtml = `<h3><i class="fas fa-filter"></i> Students with ${subjectName} ${directionText} ${threshold}</h3>`;
+                    
+                    if (response.data && response.data.length > 0) {
+                        resultHtml += '<div style="overflow-x: auto;"><table>';
+                        resultHtml += '<tr><th>Student ID</th><th>Name</th><th>Maths</th><th>English</th><th>Chemistry</th><th>Physics</th><th>Data Structure</th><th>Total</th></tr>';
+                        response.data.forEach(student => {
+                            resultHtml += `<tr>
+                                <td>${student.student_id}</td>
+                                <td>${student.name}</td>
+                                <td>${formatAttendance(student.maths)}</td>
+                                <td>${formatAttendance(student.english)}</td>
+                                <td>${formatAttendance(student.chemistry)}</td>
+                                <td>${formatAttendance(student.physics)}</td>
+                                <td>${formatAttendance(student.datastructure)}</td>
+                                <td>${formatAttendance(student.total_attendance)}</td>
+                            </tr>`;
+                        });
+                        resultHtml += '</table></div>';
+                    } else {
+                        resultHtml += `
+                            <div class="alert alert-error">
+                                <i class="fas fa-info-circle"></i>
+                                <span>No students found with ${subjectName} attendance ${directionText} ${threshold}.</span>
+                            </div>
+                        `;
+                    }
+                    $('#thresholdResult').html(resultHtml);
+                },
+                error: function(xhr, status, error) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred during threshold search';
+                    showError('#thresholdResult', errorMsg);
+                }
+            });
+        });
+
+        // View attendance button
+        $('#viewAttendanceBtn').click(function() {
+            showLoading('#attendanceResult');
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/get_attendance',
+                type: 'GET',
+                success: function(response) {
+                    let resultHtml = '<h3><i class="fas fa-clipboard-list"></i> Attendance Records</h3>';
+                    
+                    if (response.data && response.data.length > 0) {
+                        resultHtml += '<div style="overflow-x: auto;"><table>';
+                        resultHtml += '<tr><th>Student ID</th><th>Name</th><th>Maths</th><th>English</th><th>Chemistry</th><th>Physics</th><th>Data Structure</th><th>Total</th></tr>';
+                        response.data.forEach(student => {
+                            resultHtml += `<tr>
+                                <td>${student.student_id}</td>
+                                <td>${student.name}</td>
+                                <td>${formatAttendance(student.maths)}</td>
+                                <td>${formatAttendance(student.english)}</td>
+                                <td>${formatAttendance(student.chemistry)}</td>
+                                <td>${formatAttendance(student.physics)}</td>
+                                <td>${formatAttendance(student.datastructure)}</td>
+                                <td>${formatAttendance(student.total_attendance)}</td>
+                            </tr>`;
+                        });
+                        resultHtml += '</table></div>';
+                    } else {
+                        resultHtml += `
+                            <div class="alert alert-error">
+                                <i class="fas fa-info-circle"></i>
+                                <span>No attendance records found.</span>
+                            </div>
+                        `;
+                    }
+                    $('#attendanceResult').html(resultHtml);
+                },
+                error: function(xhr, status, error) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred while retrieving attendance data';
+                    showError('#attendanceResult', errorMsg);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
