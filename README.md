@@ -2,7 +2,7 @@
 
 A sophisticated attendance management system that leverages facial recognition technology, efficient data structures, and a hybrid architecture combining Python, C++, and web technologies.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The system implements a unique hybrid architecture that combines the power of multiple technologies to achieve optimal performance:
 
@@ -50,7 +50,7 @@ The system uses pre-trained models for accurate face recognition:
 - `dlib_face_recognition_resnet_model_v1.dat`: ResNet-based face recognition model
 - `shape_predictor_68_face_landmarks.dat`: Facial landmark detection model
 
-## 🌟 Architectural Importance
+## Architectural Importance
 
 ### 1. Hybrid Processing Approach
 - **Why It Matters**: The combination of Python and C++ allows us to leverage Python's excellent ML libraries while using C++ for performance-critical operations
@@ -65,7 +65,7 @@ The system uses pre-trained models for accurate face recognition:
 - Separate executables for different operations enable parallel processing
 - Serialized data storage provides persistence with quick access
 
-## 🚀 Performance Features
+## Performance Features
 
 1. **Optimized Face Recognition**
    - Uses dlib's ResNet model for accurate face recognition
@@ -80,7 +80,7 @@ The system uses pre-trained models for accurate face recognition:
    - Efficient C++ implementations for core data structure operations
    - Optimized vector distance calculations for face matching
 
-## 🛠️ Dependencies
+## Dependencies
 
 ### Python Packages
 - Flask & Flask-CORS for API server
@@ -93,14 +93,14 @@ The system uses pre-trained models for accurate face recognition:
 - Standard Template Library (STL)
 - Custom implementations of AVL and Trie data structures
 
-## 🔒 Security Considerations
+## Security Considerations
 
 The architecture implements several security measures:
 - Serialized data storage for data integrity
 - Separate executables for critical operations
 - Controlled access to attendance records
 
-## 🎯 Future Scalability
+## Future Scalability
 
 The modular architecture allows for:
 1. Addition of new subject modules
